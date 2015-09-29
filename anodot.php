@@ -27,7 +27,7 @@ class anodot
 
 		// Reset the response cache
 		$this->response = null;
-
+		$this->http_status = null ;
 		$headers = array(
 				'Content-Type: application/json',
 				'Accept: application/json'
@@ -48,7 +48,14 @@ class anodot
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		
 		$output=curl_exec($ch);
-		$GLOBALS['http_status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$this->http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+				
+		/* http_status can be one of: 
+		200 = good metric
+		410 = authentication error
+		500 = bad data
+		*/
+
 		curl_close($ch);
 		$this->response = $output;
 		return $output;
@@ -117,3 +124,6 @@ class anodot
 
 	
 }
+
+
+###############################################################################################
