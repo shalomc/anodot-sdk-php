@@ -42,6 +42,15 @@ print_r( );
 print( PHP_EOL );
 
 
+/* http_status can be one of: 
+200 = good metric
+410 = authentication error
+500 = bad data
+*/
+
+echo "Status code is " ;
+echo $anodot->http_status ; 
+
 return;
 
 ?>
