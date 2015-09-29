@@ -1,5 +1,6 @@
 CakePHP 3
 
+private/*
 /vendor/*
 /config/app.php
 /tmp/*
