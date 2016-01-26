@@ -4,6 +4,7 @@ class anodot
 
 	public $response;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
 	 * execute a call to the anodot API
 	 * @command string Which API command to run
@@ -11,7 +12,7 @@ class anodot
 	 * @payload string The payload to send
 	 * @return mixed The anodot response
 	 */
-	protected function execute($command, $token, $method= 'POST', $payload='' )  
+	protected function execute($command, $token, $method= 'POST', $payload='' , $debug=false)  
 	{
 		$anodot_base_url = "https://api.anodot.com/api/v1/";
 		
@@ -39,7 +40,7 @@ class anodot
 		curl_setopt($ch,CURLOPT_URL,$url);
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 		curl_setopt($ch,CURLOPT_HEADER, false); 
-		curl_setopt($ch, CURLOPT_VERBOSE, false);
+		curl_setopt($ch, CURLOPT_VERBOSE, $debug);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method); 
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);                                                                  
@@ -86,38 +87,45 @@ class anodot
 
 
 
+///////////////////////////////////////////////////////
 	/*
-	 * Build the actual Anodot payload
+	 * Build the actual Anodot payload for a single value
 	 * @name string The name of the metric
 	 * @timestamp timestap 
 	 * @value number Value of metric
 	 * @target_type string Target type can be counter/gauge or null
+	 * @return_array boolean If true, return array. If false, return JSON string
 	 */
-	public function build_payload($name, $timestamp= null , $value, $target_type=null)   // target_type is expected to be:  counter or gauge or null
+	public function build_payload($name, $timestamp= null , $value, $target_type=null, $return_array=false)   // target_type is expected to be:  counter or gauge or null
 	{
 		$timestamp =  ($timestamp==null) ? time() : $timestamp; 
 		$anodot_array_elem= array(
 			"name"=>$name,
-			"timestamp"=>$timestamp,
-			"value"=>$value
+
+
+			"value"=>$value,
+			"timestamp"=>$timestamp
 		);
 		if ($target_type != NULL ) {
 			$anodot_array_elem["tags"] = array ("target_type"=> $target_type) ; 
 		}		
 		$anodot_array = array(); 
 		$anodot_array[] = $anodot_array_elem; 
-		return json_encode($anodot_array);
+		if ($return_array) return $anodot_array; 
+		else return json_encode($anodot_array);
 	}
 
-		/*
+
+///////////////////////////////////////////////////////
+	/*
 	 * send Metrics to anodot
 	 * @payload string JSON string of metric to send
 	 * @token string Security token
 	 * @return string result of POST
 	 */
-	public function sendMetrics($payload, $token)
+	public function sendMetrics($payload, $token, $debug=false)
 	{
-		$result = $this->execute( 'metrics', $token, 'POST', $payload );  
+		$result = $this->execute( 'metrics', $token, 'POST', $payload, $debug );  
 		return $result;
 	}
 
