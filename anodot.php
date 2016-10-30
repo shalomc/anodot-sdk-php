@@ -3,6 +3,13 @@ class anodot
 {
 
 	public $response;
+	private $token;
+	
+	function __construct($token) 
+	{
+		$this->token=$token;
+	}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
@@ -12,9 +19,10 @@ class anodot
 	 * @payload string The payload to send
 	 * @return mixed The anodot response
 	 */
-	protected function execute($command, $token, $method= 'POST', $payload='' , $debug=false)  
+	protected function execute($command,  $method= 'POST', $payload='' , $debug=false)  
 	{
 		$anodot_base_url = "https://api.anodot.com/api/v1/";
+		$token=$this->token;
 		
 		
 		/* prepare ground for more complex actions
@@ -123,9 +131,9 @@ class anodot
 	 * @token string Security token
 	 * @return string result of POST
 	 */
-	public function sendMetrics($payload, $token, $debug=false)
+	public function sendMetrics($payload, $debug=false)
 	{
-		$result = $this->execute( 'metrics', $token, 'POST', $payload, $debug );  
+		$result = $this->execute( 'metrics',  'POST', $payload, $debug );  
 		return $result;
 	}
 

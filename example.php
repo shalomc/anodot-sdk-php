@@ -21,7 +21,7 @@ $sales_dimensions = array (
 	); 
 	
 
-$anodot = new anodot();
+$anodot = new anodot($token);
 
 // Helper function #1: 
 // convert the array of dimensions into a graphite compatible name. This is not necessary but highly recommended
@@ -37,7 +37,7 @@ $payload = $anodot->build_payload( $graphite_name, time() , $revenue , "gauge");
 print_r($payload ); 
 print( PHP_EOL );
 
-$result = $anodot->sendMetrics($payload, $token ) ; 
+$result = $anodot->sendMetrics($payload ) ; 
 print_r( ); 
 print( PHP_EOL );
 
